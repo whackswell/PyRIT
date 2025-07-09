@@ -11,6 +11,7 @@ import pytest
 import yaml
 
 from pyrit.cli.__main__ import main
+from pyrit.exceptions import AttackExecutionException
 
 test_cases_success = [
     "--config-file 'tests/integration/cli/mixed_multiple_orchestrators_args_success.yaml'",
@@ -69,7 +70,7 @@ converters = [
     ),
     (
         "text",
-        {"type": "CharSwapGenerator"},
+        {"type": "CharSwapConverter"},
     ),
     (
         "text",
@@ -247,7 +248,12 @@ def test_cli_integration_success_converters_all(
     data = _create_data(input_type)
     data["converters"] = [converter_data]
 
-    use_text_target_types = ["PDFConverter", "AddImageVideoConverter", "AudioFrequencyConverter"]
+    use_text_target_types = [
+        "PDFConverter",
+        "AddImageVideoConverter",
+        "AudioFrequencyConverter",
+        "AzureSpeechTextToAudioConverter",
+    ]
     if converter_data["type"] in use_text_target_types:
         # OpenAIChatTarget only allows text and image_path data types as input, and these converters
         # output different data types so we need to use TextTarget
@@ -267,7 +273,7 @@ test_cases_error = [
     (
         "--config-file 'tests/integration/cli/prompt_send_converters_wrong_data_type.yaml'",
         "Input type not supported",
-        ValueError,
+        AttackExecutionException,
     ),
 ]
 
