@@ -1,5 +1,6 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT license.
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -20,9 +21,11 @@ class LookBackScorer(Scorer):
     Parameters:
         exclude_instruction_prompts (bool): If True, excludes instruction prompts from the conversation.
         chat_target (PromptChatTarget): The chat target to use for scoring.
+        exclude_instruction_prompts (bool): If True, excludes instruction prompts from the conversation.
+            Must be passed as a keyword argument.
     """
 
-    def __init__(self, exclude_instruction_prompts: bool, chat_target: PromptChatTarget) -> None:
+    def __init__(self, chat_target: PromptChatTarget, *, exclude_instruction_prompts: bool) -> None:
         self._prompt_target = chat_target
         self.scorer_type = "float_scale"
         self.exclude_instruction_prompts = exclude_instruction_prompts
